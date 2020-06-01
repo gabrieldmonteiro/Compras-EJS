@@ -3,7 +3,6 @@ const app = express();
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const Compras = require("./models/Compras");
-let control = false;
 
 //.ENV
 dotenv.config();
@@ -27,7 +26,7 @@ app.set("view engine", "ejs");
 
 app.get("/compras", (req, res) => {
   //if(control){
-  if (sessionStorage.getItem("L")==="1") {
+  if (localStorage.getItem('L')==='1') {
     Compras.find({}, (err, tasks) => {
       res.render("../src/views/compras.ejs", { todoTasks: tasks });
       control = false;
@@ -86,7 +85,7 @@ let pw = "";
 app.post("/", (req, res) => {
   pw = req.body.txtPassword;
   if (pw === process.env.PASSWORD) {
-    sessionStorage.setItem("L", "1");
+    localStorage.setItem('L', '1');
     res.redirect("/compras");
   } else {
     res.redirect("/");
