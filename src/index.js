@@ -24,11 +24,10 @@ app.set("view engine", "ejs");
 
 app.get("/compras", (req, res) => {
 
-  if(sessionStorage.getItem("login") === "ok"){
-    
+  if(sessionStorage.getItem("login") == "ok"){
+
   Compras.find({}, (err, tasks) => {
-    res.render("../src/views/compras.ejs", { todoTasks: tasks });
-  
+    res.render("../src/views/compras.ejs", { todoTasks: tasks });  
   });
 }else{
   res.render("../src/views/auth.ejs");
