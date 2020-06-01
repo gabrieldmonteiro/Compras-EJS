@@ -3,6 +3,7 @@ const app = express();
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const Compras = require("./models/Compras");
+let control = false;
 
 //.ENV
 dotenv.config();
@@ -11,7 +12,9 @@ dotenv.config();
 mongoose.set("useFindAndModify", false);
 mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true }, () => {
   console.log("Connected to db!");
-  app.listen(process.env.PORT||3000, () => console.log("Server Up and running"));
+  app.listen(process.env.PORT || 3000, () =>
+    console.log("Server Up and running")
+  );
 });
 
 //GET
@@ -23,13 +26,9 @@ app.use("/static", express.static("public"));
 app.set("view engine", "ejs");
 
 app.get("/compras", (req, res) => {
-  console.log(sessionStorage.getItem("login"));
-
-  if(sessionStorage.getItem("login") == "ok"){
-
-
+  if(control){
   Compras.find({}, (err, tasks) => {
-    res.render("../src/views/compras.ejs", { todoTasks: tasks });  
+    res.render("../src/views/compras.ejs", { todoTasks: tasks });
   });
 }else{
   res.render("../src/views/auth.ejs");
@@ -84,8 +83,8 @@ app.route("/remove/:id").get((req, res) => {
 let pw = "";
 app.post("/", (req, res) => {
   pw = req.body.txtPassword;
-  if (pw === process.env.PASSWORD) {
-    sessionStorage.setItem("login","ok");
+  if (pw === process.env.PASSWORD) {    
+    control = true;
     res.redirect("/compras");
   } else {
     res.redirect("/");
