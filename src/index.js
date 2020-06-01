@@ -21,10 +21,18 @@ app.get("/", (req, res) => {
 
 app.use("/static", express.static("public"));
 app.set("view engine", "ejs");
+
 app.get("/compras", (req, res) => {
+
+  if(sessionStorage.getItem("login") === "ok"){
+    
   Compras.find({}, (err, tasks) => {
     res.render("../src/views/compras.ejs", { todoTasks: tasks });
+  
   });
+}else{
+  res.render("../src/views/auth.ejs");
+}
 });
 
 //POST
@@ -77,6 +85,7 @@ app.post("/", (req, res) => {
   pw = req.body.txtPassword;
   if (pw === process.env.PASSWORD) {
     res.redirect("/compras");
+    sessionStorage.setItem("login","ok");
   } else {
     res.redirect("/");
   }
