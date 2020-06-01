@@ -30,6 +30,7 @@ app.get("/compras", (req, res) => {
   if(control){
   Compras.find({}, (err, tasks) => {
     res.render("../src/views/compras.ejs", { todoTasks: tasks });
+    control = false;
   });
 }else{
   res.render("../src/views/auth.ejs");
