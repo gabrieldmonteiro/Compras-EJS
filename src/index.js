@@ -26,6 +26,7 @@ app.use("/static", express.static("public"));
 app.set("view engine", "ejs");
 
 app.get("/compras", (req, res) => {
+  console.log(control);
   if(control){
   Compras.find({}, (err, tasks) => {
     res.render("../src/views/compras.ejs", { todoTasks: tasks });
