@@ -27,7 +27,7 @@ app.set("view engine", "ejs");
 
 app.get("/compras", (req, res) => {
   //if(control){
-  if (sessionStorage.getItem("L")) {
+  if (sessionStorage.getItem("L")==="1") {
     Compras.find({}, (err, tasks) => {
       res.render("../src/views/compras.ejs", { todoTasks: tasks });
       control = false;
