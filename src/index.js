@@ -75,17 +75,9 @@ app.route("/remove/:id").get((req, res) => {
 let pw = "";
 app.post("/", (req, res) => {
   pw = req.body.txtPassword;
-  if (auth(pw)) {
+  if (pw === process.env.PASSWORD) {
     res.redirect("/compras");
   } else {
     res.redirect("/");
   }
 });
-
-function auth(pw) {
-  if (pw === process.env.PASSWORD) {
-    return true;
-  } else {
-    return false;
-  }
-}
