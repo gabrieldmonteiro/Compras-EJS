@@ -26,15 +26,15 @@ app.use("/static", express.static("public"));
 app.set("view engine", "ejs");
 
 app.get("/compras", (req, res) => {
-  console.log(control);
-  if(control){
-  Compras.find({}, (err, tasks) => {
-    res.render("../src/views/compras.ejs", { todoTasks: tasks });
-    control = false;
-  });
-}else{
-  res.render("../src/views/auth.ejs");
-}
+  //if(control){
+  if (sessionStorage.getItem("L")) {
+    Compras.find({}, (err, tasks) => {
+      res.render("../src/views/compras.ejs", { todoTasks: tasks });
+      control = false;
+    });
+  } else {
+    res.render("../src/views/auth.ejs");
+  }
 });
 
 //POST
@@ -85,8 +85,8 @@ app.route("/remove/:id").get((req, res) => {
 let pw = "";
 app.post("/", (req, res) => {
   pw = req.body.txtPassword;
-  if (pw === process.env.PASSWORD) {    
-    control = true;
+  if (pw === process.env.PASSWORD) {
+    sessionStorage.setItem("L", "1");
     res.redirect("/compras");
   } else {
     res.redirect("/");
