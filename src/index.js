@@ -83,8 +83,8 @@ let pw = "";
 app.post("/", (req, res) => {
   pw = req.body.txtPassword;
   if (pw === process.env.PASSWORD) {
-    res.redirect("/compras");
     sessionStorage.setItem("login","ok");
+    res.redirect("/compras");
   } else {
     res.redirect("/");
   }
