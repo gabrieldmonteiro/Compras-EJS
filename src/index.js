@@ -22,7 +22,7 @@ mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true }, () => {
 //GET
 app.get("/", (req, res) => {
   console.log(SS.getItem("access"));
-  if (SS.getItem("access") == null) {
+  if (SS.getItem("access") == false) {
     res.render("../src/views/auth.ejs");
   } else {
     Compras.find({}, (err, tasks) => {
