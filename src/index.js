@@ -3,6 +3,7 @@ const app = express();
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const Compras = require("./models/Compras");
+let access = false;
 
 //.ENV
 dotenv.config();
@@ -18,17 +19,26 @@ mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true }, () => {
 
 //GET
 app.get("/", (req, res) => {
+  if(!access){
   res.render("../src/views/auth.ejs");
+  }else{
+    Compras.find({}, (err, tasks) => {
+      res.render("../src/views/compras.ejs", { todoTasks: tasks });    
+    });
+  }
 });
 
 app.use("/static", express.static("public"));
 app.set("view engine", "ejs");
 
 app.get("/compras", (req, res) => {  
+  if(access){
   Compras.find({}, (err, tasks) => {
-    res.render("../src/views/compras.ejs", { todoTasks: tasks });
-    control = false;
+    res.render("../src/views/compras.ejs", { todoTasks: tasks });    
   });
+}else{
+  res.render("../src/views/auth.ejs");
+}
 });
 
 //POST
@@ -80,6 +90,7 @@ let pw = "";
 app.post("/", (req, res) => {
   pw = req.body.txtPassword;
   if (pw === process.env.PASSWORD) {       
+    access = true;
     res.redirect("/compras");
   } else {
     res.redirect("/");
