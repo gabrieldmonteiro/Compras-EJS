@@ -3,14 +3,9 @@ const app = express();
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const Compras = require("./models/Compras");
-let access = false;
-
-if (typeof localStorage === "undefined" || localStorage === null) {
-  var LocalStorage = require("node-localstorage").LocalStorage;
-  localStorage = new LocalStorage("./scratch");
-}
-localStorage.clear();
-console.log(localStorage.length);
+var SS = require('sessionstorage');
+let access = false; 
+SS.clear();
 //.ENV
 dotenv.config();
 
@@ -25,8 +20,8 @@ mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true }, () => {
 
 //GET
 app.get("/", (req, res) => {
-  console.log(localStorage.getItem("access"));
-  if (localStorage.getItem("access") == null) {
+  console.log(SS.getItem("access"));
+  if (SS.getItem("access") == null) {
     res.render("../src/views/auth.ejs");
   } else {
     Compras.find({}, (err, tasks) => {
@@ -39,7 +34,7 @@ app.use("/static", express.static("public"));
 app.set("view engine", "ejs");
 
 app.get("/compras", (req, res) => {
-  if (localStorage.getItem("access")) {
+  if (SS.getItem("access")) {
     Compras.find({}, (err, tasks) => {
       res.render("../src/views/compras.ejs", { todoTasks: tasks });
     });
@@ -97,9 +92,9 @@ let pw = "";
 app.post("/", (req, res) => {
   pw = req.body.txtPassword;
   if (pw === process.env.PASSWORD) {
-    localStorage.setItem("access", true);
-    console.log(localStorage.length);
-    console.log(localStorage.getItem("access"));
+    SS.setItem("access", true);
+    console.log(SS.length);
+    console.log(SS.getItem("access"));
     res.redirect("/compras");
   } else {
     res.redirect("/");
