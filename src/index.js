@@ -5,6 +5,12 @@ const mongoose = require("mongoose");
 const Compras = require("./models/Compras");
 let access = false;
 
+if (typeof localStorage === "undefined" || localStorage === null) {
+  var LocalStorage = require("node-localstorage").LocalStorage;
+  localStorage = new LocalStorage("./scratch");
+}
+localStorage.clear();
+console.log(localStorage.length);
 //.ENV
 dotenv.config();
 
@@ -19,11 +25,12 @@ mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true }, () => {
 
 //GET
 app.get("/", (req, res) => {
-  if(!access){
-  res.render("../src/views/auth.ejs");
-  }else{
+  console.log(localStorage.getItem("access"));
+  if (localStorage.getItem("access") == null) {
+    res.render("../src/views/auth.ejs");
+  } else {
     Compras.find({}, (err, tasks) => {
-      res.render("../src/views/compras.ejs", { todoTasks: tasks });    
+      res.render("../src/views/compras.ejs", { todoTasks: tasks });
     });
   }
 });
@@ -31,14 +38,14 @@ app.get("/", (req, res) => {
 app.use("/static", express.static("public"));
 app.set("view engine", "ejs");
 
-app.get("/compras", (req, res) => {  
-  if(access){
-  Compras.find({}, (err, tasks) => {
-    res.render("../src/views/compras.ejs", { todoTasks: tasks });    
-  });
-}else{
-  res.render("../src/views/auth.ejs");
-}
+app.get("/compras", (req, res) => {
+  if (localStorage.getItem("access")) {
+    Compras.find({}, (err, tasks) => {
+      res.render("../src/views/compras.ejs", { todoTasks: tasks });
+    });
+  } else {
+    res.render("../src/views/auth.ejs");
+  }
 });
 
 //POST
@@ -89,8 +96,10 @@ app.route("/remove/:id").get((req, res) => {
 let pw = "";
 app.post("/", (req, res) => {
   pw = req.body.txtPassword;
-  if (pw === process.env.PASSWORD) {       
-    access = true;
+  if (pw === process.env.PASSWORD) {
+    localStorage.setItem("access", true);
+    console.log(localStorage.length);
+    console.log(localStorage.getItem("access"));
     res.redirect("/compras");
   } else {
     res.redirect("/");
