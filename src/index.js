@@ -6,6 +6,7 @@ const Compras = require("./models/Compras");
 var SS = require('sessionstorage');
 let access = false; 
 SS.clear();
+SS.setItem("access",false);
 //.ENV
 dotenv.config();
 
