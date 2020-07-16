@@ -6,7 +6,7 @@ const Compras = require("./models/Compras");
 var SS = require('sessionstorage');
 let access = false; 
 SS.clear();
-console.log(SS.getItem("access"));
+
 //.ENV
 dotenv.config();
 
@@ -21,7 +21,6 @@ mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true }, () => {
 
 //GET
 app.get("/", (req, res) => {
-  console.log(SS.getItem("access"));
   if (SS.getItem("access") == null) {
     res.render("../src/views/auth.ejs");
   } else {
@@ -94,10 +93,13 @@ app.post("/", (req, res) => {
   pw = req.body.txtPassword;
   if (pw === process.env.PASSWORD) {
     SS.setItem("access", true);
-    console.log(SS.length);
-    console.log(SS.getItem("access"));
+    timeout();
     res.redirect("/compras");
   } else {
     res.redirect("/");
   }
 });
+
+function timeout(){
+  setTimeout(function(){SS.clear(); }, 900000);
+}
